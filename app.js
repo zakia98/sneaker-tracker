@@ -3,6 +3,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+require('dotenv').config()
+//set up mongoose connection
+let mongoose = require('mongoose');
+let mongoDB = `mongodb+srv://zakia98:${process.env.DB_PW}@cluster0.karwj.mongodb.net/sneaker_tracker?retryWrites=true&w=majority`
+mongoose.connect(mongoDB, {useNewUrlParser:true, useUnifiedTopology:true});
+let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
