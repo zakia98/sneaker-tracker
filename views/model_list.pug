@@ -1,0 +1,13 @@
+extends layout 
+
+block content 
+    h1= title 
+
+    ul 
+        each model in list_models  
+            li
+                a(href=model.url) #{model.name}
+                |  (#{model.brand.name})
+
+        else 
+            li There are no models to show.
