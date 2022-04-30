@@ -1,8 +1,22 @@
 let Model = require('../models/model');
-
+let Brand = require('../models/brand')
+let InventoryItem = require('../models/inventoryitem')
+let async = require('async')
 
 exports.index = function(req, res) {
-    res.send('NOT IMPLEMENTED: Site Home Page')
+    async.parallel({
+        model_count:function(callback) {
+            Model.countDocuments({}, callback)
+        },
+        brand_count:function(callback) {
+            Brand.countDocuments({}, callback)
+        },
+        inventoryitems_count:function(callback) {
+            InventoryItem.countDocuments({}, callback)
+        }
+    }, function(err, results) {
+        res.render('index', {title:'Sneaker Tracker Home', error:err, data:results})
+    })
 }
 
 //display list of all models.
