@@ -5,7 +5,7 @@ let Schema = mongoose.Schema;
 let ModelSchema = new Schema({
     name:{type:String, required:true},
     brand:{type:Schema.Types.ObjectId, ref:'Brand', required:true},
-    description:{type:String, required:true},
+    description:{type:String, required:false},
     retail_price:{type:Number, required:true},
     thumbnail:{type:String, required:false}
 })
