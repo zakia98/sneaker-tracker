@@ -1,0 +1,13 @@
+extends layout 
+
+block content 
+    h1= title 
+
+    ul 
+        each item in list_inventoryitem
+            li
+                a(href=item.url) #{item.model.name}
+                |  (#{model.brand.name})
+
+        else 
+            li There are no models to show.
