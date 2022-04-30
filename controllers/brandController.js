@@ -2,8 +2,14 @@ let Brand = require('../models/brand');
 
 
 //display list of all brands.
-exports.brand_list = function(req, res) {
-    res.send('NOT IMPLEMENTED YET: brand list')
+exports.brand_list = function(req, res, next) {
+    Brand.find({})
+    .sort({name:1})
+    .exec(function(err, list_brand) {
+        if (err) { return next(err)}
+        //Success, so render the page
+        res.render('brand_list', {title:'List of Brands', list_brand:list_brand})
+    })
 }
 
 //Display detail page for a specific brand.
