@@ -1,6 +1,5 @@
 let express = require('express');
-const { router } = require('../app');
-router = express.Router();
+let router = express.Router();
 
 //Require controller modules
 let brand_controller = require('../controllers/brandController');
@@ -94,5 +93,6 @@ router.get('/inventoryitem/:id/update', inventoryitem_controller.inventoryitem_u
 router.get('/inventoryitem/:id', inventoryitem_controller.inventoryitem_detail)
 
 //GET request for a list of all inventory item
-router.get('/binventoryitems', inventoryitem_controller.inventoryitem_list)
+router.get('/inventoryitems', inventoryitem_controller.inventoryitem_list)
 
+module.exports = router
