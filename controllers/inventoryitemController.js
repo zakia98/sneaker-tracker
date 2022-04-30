@@ -3,7 +3,14 @@ let Inventoryitem = require('../models/inventoryitem');
 
 //display list of all inventoryitems.
 exports.inventoryitem_list = function(req, res) {
-    res.send('NOT IMPLEMENTED YET: inventoryitem list')
+    Inventoryitem.find({})
+    .sort({name:1})
+    .populate('model')
+    .exec(function (err, list_inventoryitem) {
+        if (err) { return next(err); }
+        //Successfull, so render the page
+        res.render('inventory_list', {title:'Items currrently in stock', list_inventoryitem:list_inventoryitem})
+    })
 }
 
 //Display detail page for a specific inventoryitem.
