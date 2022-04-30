@@ -1,0 +1,25 @@
+extends layout 
+block content 
+    h1 #{model.name}
+
+    p #[strong Brand:]
+        a(href=model.brand.url) #{model.brand.name}
+    p #[strong Description: ]  #{model.description}
+    p #[strong Retail Price: ]  #{model.retail_price}
+
+    img(
+        src=model.thumbnail, 
+        alt="shoe image", 
+        srcset="", style='max-width:600px;'
+        )
+
+    div(style='margin-left:20px;margin-top:20px;')
+        h4 Stock in inventory: 
+
+
+        each item in inventoryitems
+            hr
+            p #[strong Id:] 
+                a(href=val.url) #{val._id}
+        else
+            p No stock in inventory
