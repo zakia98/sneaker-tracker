@@ -18,19 +18,19 @@ router.get('/', model_controller.index);
 router.get('/model/create', model_controller.model_create_get);
 
 //POST request for creating a model.
-router.get('/model/create', model_controller.model_create_post);
+router.post('/model/create', model_controller.model_create_post);
 
 //GET request to delete a model.
 router.get('/model/:id/delete', model_controller.model_delete_get);
 
 //POST request to delete a model.
-router.get('/model/:id/delete', model_controller.model_delete_post);
+router.post('/model/:id/delete', model_controller.model_delete_post);
 
 //GET request to update a model.
 router.get('/model/:id/update', model_controller.model_update_get);
 
 //POST request to update a model.
-router.get('/model/:id/update', model_controller.model_update_post);
+router.post('/model/:id/update', model_controller.model_update_post);
 
 //GET request for one model
 router.get('/model/:id', model_controller.model_detail)
@@ -46,19 +46,19 @@ router.get('/models', model_controller.model_list)
 router.get('/brand/create', brand_controller.brand_create_get);
 
 //POST request for creating a brand
-router.get('/brand/create', brand_controller.brand_create_post);
+router.post('/brand/create', brand_controller.brand_create_post);
 
 //GET request to delete a brand
 router.get('/brand/:id/delete', brand_controller.brand_delete_get);
 
 //POST request to delete a brand
-router.get('/brand/:id/delete', brand_controller.brand_delete_post);
+router.post('/brand/:id/delete', brand_controller.brand_delete_post);
 
 //GET request to update a brand
 router.get('/brand/:id/update', brand_controller.brand_update_get);
 
 //POST request to update a brand
-router.get('/brand/:id/update', brand_controller.brand_update_post);
+router.post('/brand/:id/update', brand_controller.brand_update_post);
 
 //GET request for one brand
 router.get('/brand/:id', brand_controller.brand_detail)
@@ -75,19 +75,19 @@ router.get('/brands', brand_controller.brand_list)
 router.get('/inventoryitem/create', inventoryitem_controller.inventoryitem_create_get);
 
 //POST request for creating a inventory item
-router.get('/inventoryitem/create', inventoryitem_controller.inventoryitem_create_post);
+router.post('/inventoryitem/create', inventoryitem_controller.inventoryitem_create_post);
 
 //GET request to delete a inventory item
 router.get('/inventoryitem/:id/delete', inventoryitem_controller.inventoryitem_delete_get);
 
 //POST request to delete a inventory item
-router.get('/inventoryitem/:id/delete', inventoryitem_controller.inventoryitem_delete_post);
+router.post('/inventoryitem/:id/delete', inventoryitem_controller.inventoryitem_delete_post);
 
 //GET request to update a inventory item
 router.get('/inventoryitem/:id/update', inventoryitem_controller.inventoryitem_update_get);
 
 //POST request to update a inventory item
-router.get('/inventoryitem/:id/update', inventoryitem_controller.inventoryitem_update_post);
+router.post('/inventoryitem/:id/update', inventoryitem_controller.inventoryitem_update_post);
 
 //GET request for one inventory item
 router.get('/inventoryitem/:id', inventoryitem_controller.inventoryitem_detail)
