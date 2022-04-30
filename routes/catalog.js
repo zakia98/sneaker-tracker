@@ -37,8 +37,35 @@ router.get('/model/:id/update', model_controller.model_update_post);
 router.get('/model/:id', model_controller.model_detail)
 
 //GET request for a list of all models
-router.get('/books', model_controller.model_list)
+router.get('/models', model_controller.model_list)
 
 //BRAND ROUTES //
+//This GET and POST request must come before routes that display brands
+//as they use an id. 
+
+//GET request for creating a brand
+router.get('/brand/create', brand_controller.brand_create_get);
+
+//POST request for creating a brand
+router.get('/brand/create', brand_controller.brand_create_post);
+
+//GET request to delete a brand
+router.get('/brand/:id/delete', brand_controller.brand_delete_get);
+
+//POST request to delete a brand
+router.get('/brand/:id/delete', brand_controller.brand_delete_post);
+
+//GET request to update a brand
+router.get('/brand/:id/update', brand_controller.brand_update_get);
+
+//POST request to update a brand
+router.get('/brand/:id/update', brand_controller.brand_update_post);
+
+//GET request for one brand
+router.get('/brand/:id', brand_controller.brand_detail)
+
+//GET request for a list of all brand
+router.get('/brands', brand_controller.brand_list)
+
 
 
