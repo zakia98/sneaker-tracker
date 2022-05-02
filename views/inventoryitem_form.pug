@@ -1,0 +1,28 @@
+extends layout 
+
+block content
+    h1= title
+
+    form(method='POST' action='')
+        div.form-group
+            label(for="model") Model: 
+            select#inventoryitem.form-control(type='select' placeholder='select model' name='model' required='true' )
+                - models.sort(function(a, b) {let textA=a.name.toUpperCase(); let textB = b.name.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;})
+                for model in models 
+                    if inventoryitem
+                        option(value=model._id selected=(model._id.toString()===model.inventoryitem._id.toString() ? 'selected' : false) ) #{model.name}    
+                    else
+                        option(value=model._id) #{model.name}
+        div.form-group 
+            label(for="size") Enter size: 
+            input#inventoryitem.form-control(type='number' placeholder='enter size' name='size' required='true' value=(inventoryitem === undefined ? '' : inventoryitem.size))
+        div.form-group 
+            label(for='purchase_price') Enter purchase price: 
+            input#inventoryitem.form-control(type='number' placeholder='Enter purchase price' name='purchase_price' required='true' value=(inventoryitem === undefined ? '' : inventoryitem.purchase_price))
+
+        button.btn.btn-primary(type='submit') Submit 
+
+    if errors 
+        ul 
+            for error in errors 
+                li #{error.msg}

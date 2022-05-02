@@ -8,7 +8,7 @@ block content
       input#title.form-control(type='text', placeholder='Name of model' name='name' required='true' value=(undefined===book ? '' : book.title) )
     div.form-group
       label(for='brand') Brand:
-      select#brand.form-control(type='select', placeholder='Select brand' name='brand' required='true' )
+      select#brand.form-control(type='select' placeholder='Select brand' name='brand' required='true' )
         - brands.sort(function(a, b) {let textA = a.name.toUpperCase(); let textB = b.name.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
         for brand in brands
           if model

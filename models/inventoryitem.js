@@ -7,7 +7,6 @@ let InventoryItemSchema = new Schema({
     size:{type:Number, required:true},
     purchase_price:{type:Number, required:true}
 })
-
 InventoryItemSchema
     .virtual('url')
     .get(function() {
