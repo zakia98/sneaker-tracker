@@ -6,10 +6,16 @@ const { body, validationResult } = require('express-validator');
 
 
 //display list of all inventoryitems.
-exports.inventoryitem_list = function(req, res) {
+exports.inventoryitem_list = function(req, res, next) {
     Inventoryitem.find({})
     .sort({name:1})
-    .populate('model')
+    .populate({
+        path:'model',
+        populate:{
+            path:'brand',
+            model:'Brand'
+        }
+    })
     .exec(function (err, list_inventoryitem) {
         if (err) { return next(err); }
         //Successfull, so render the page
@@ -19,7 +25,27 @@ exports.inventoryitem_list = function(req, res) {
 
 //Display detail page for a specific inventoryitem.
 exports.inventoryitem_detail = function(req, res) {
-    res.send('NOT IMPLEMENTED: inventoryitem detail: ' + req.params.id)
+    async.parallel({
+        inv_item:function(callback) {
+            Inventoryitem.findById(req.params.id)
+                .populate('model')
+                .exec(callback);
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.inv_item==null) {
+            //We have no results
+            let err = new Error('Model not found');
+            err.status = 404;
+            return next(err);
+        }
+
+        //Successful, so we render the page.
+        res.render('inventoryitem_detail', {
+            title:results.inv_item.model.name, 
+            inv_item:results.inv_item, 
+        })
+    })
 }
 
 //Display inventoryitem create form on GET
@@ -100,21 +126,119 @@ exports.inventoryitem_create_post = [
 ]
 
 //Display inventoryitem delete on GET
-exports.inventoryitem_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: inventoryitem DELETE GET')
+exports.inventoryitem_delete_get = function(req, res, next) {
+    //Need to get the inventory item
+    async.parallel({
+        inv_item:function(callback) {
+            Inventoryitem.findById(req.params.id)
+            .populate('model')
+            .exec(callback)
+        }
+    }, function(err, results) {
+        if (err) {return next(err); }
+        if (results.inv_item == null) {
+            //No models found
+            res.redirect('/catalog/inventoryitems')
+        }
+        //successful, so render the delete page
+        res.render('inventoryitem_delete.pug', {
+            title:'Remove from inventory',
+            inv_item:inv_item,
+        })
+
+    })
 }
 
 //Display inventoryitem delete on POST
-exports.inventoryitem_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: inventoryitem DELETE POST')
+exports.inventoryitem_delete_post = function(req, res, next) {
+    async.parallel({
+        inv_item:function(callback) {
+            Inventoryitem.findById(req.params.id)
+            .populate('model')
+            .exec(callback)
+        }
+    }, function(err, results) {
+        if (err) {return next(err); }
+        //successful, so delete the item
+        Inventoryitem.findByIdAndRemove(req.body.inv_itemid, function deleteInvItem(err) {
+            if (err) {return next(err); }
+            //success, go back to inventory list. 
+        })
+    })
 }
 
 //Display inventoryitem delete on GET
 exports.inventoryitem_update_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: inventoryitem UPDATE GET')
+    async.parallel({
+        inv_item:function(callback) {
+            Inventoryitem.findById(req.params.id)
+            .exec(callback)
+        },
+        models:function(callback) {
+            Model.find({})
+            .exec(callback)
+        }
+    }, function(err, results) {
+        if (err) {return next(err); }
+        if (results.inv_item == null) {
+            //No results.
+            let err = new Error('Model not found')
+            err.status = 404
+            return next(err) ; 
+        }
+        //Else, we are successful
+        //render the form.
+        res.render('inventoryitem_form', {
+            title:'Update stock item',
+            inv_item:results.inv_item,
+            models:results.models
+        })
+    })
+
 }
 
 //Display inventoryitem delete on POST
-exports.inventoryitem_update_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: inventoryitem UPDATE POST')
-}
+exports.inventoryitem_update_post = [
+
+    body('model', 'Model must not be empty').trim().isLength({min:1}).escape(),
+    body('size', 'Size must not be empty').trim().isLength({min:1}).escape(),
+    body('purchase_price').trim().isLength({min:1}).escape(),
+
+
+    (req, res, next) => {
+        //Extract the validation errors from the request
+        const errors = validationResult(req);
+        //Create a model object with the escaped/trimmed data and update with old id.
+        let inv_item = new Inventoryitem({
+            model:req.body.model,
+            size:req.body.size,
+            purchase_price:req.body.purchase_price,
+            _id:req.params.id
+        })
+        if (!errors.isEmpty()) {
+            //There are errors. Render the form again with sanitized values/error messages.
+            //Get all the model and brands for a form
+            async.parallel({
+                models:function(callback) {
+                    Model.find({})
+                    .exec(callback)
+                }
+            }, function(err, results) {
+                if (err) {return next(err); }
+                res.render('inventoryitem_form', {
+                    title:'Update Stock item',
+                    inv_item:inv_item,
+                    models:results.models,
+                    errors:errors.array()
+                })
+            })  
+        } else {
+            //Data from the form is valid. Update the record.
+            Inventoryitem.findByIdAndUpdate(req.params.id, inv_item, function(err, theitem) {
+                if (err) {return next(err); }
+                //Successfull - redirect to the model detail page
+                res.redirect(theitem.url)
+            })
+        }
+    }
+]
