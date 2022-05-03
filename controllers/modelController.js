@@ -133,21 +133,147 @@ exports.model_create_post = [
 ]
 
 //Display model delete on GET
-exports.model_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: MODEL DELETE GET')
+exports.model_delete_get = function(req, res, next) {
+    //need to check there are no related inventory items
+    //prior to deleting
+    async.parallel({
+        model:function(callback) {
+            Model.findById(req.params.id).exec(callback)
+        },
+        inv_items: function(callback) {
+            InventoryItem.find({
+                'model':req.params.id
+            })
+            .populate('model')
+            .exec(callback)
+        }
+    }, function(err, results) {
+        if(err) {return next(err); }
+        if (results.model == null) {
+            res.redirect('/catalog/models')
+        }
+        //successful, so render the delete page
+        res.render('model_delete', {
+            title:'Delete Model',
+            model:results.model,
+            inv_items:results.inv_items
+        })
+    })
 }
 
 //Display model delete on POST
-exports.model_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: MODEL DELETE POST')
+exports.model_delete_post = function(req, res, next) {
+    async.parallel({
+        model:function(callback) {
+            Model.findById(req.body.modelid).exec(callback)
+        },
+        inv_items:function(callback) {
+            InventoryItem.find({
+                'model':req.body.modelid,
+            })
+            .populate('model')
+            .exec(callback)
+        }
+    }, function(err, results) {
+        if (err) {return next(err); }
+        //Success
+        if (results.inv_items.length > 0) {
+            //There are still inventory itmes, render in
+            // the same way as the GET route. 
+
+            res.render('model_delete', {
+                title:'Delete Model',
+                model:results.model,
+                inv_items:results.inv_items
+            })
+            return
+        } else {
+            //Model has no inventory instances.
+            Model.findByIdAndRemove(req.body.modelid, function deleteModel(err) {
+                if (err) { return next(err); }
+                //Success - go back to models list
+
+                res.redirect('/catalog/models')
+            })
+        }
+    })
 }
 
 //Display model delete on GET
-exports.model_update_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: MODEL UPDATE GET')
+exports.model_update_get = function(req, res, next) {
+    async.parallel({
+        model:function(callback) {
+            Model.findById(req.params.id)
+            .exec(callback)
+        },
+        brands:function(callback) {
+            Brand.find({})
+            .exec(callback)
+        }
+    }, function(err, results) {
+        if (err) {return next(err); }
+        if (results.model == null) {
+            //No results.
+            let err = new Error('Model not found')
+            err.status = 404
+            return next(err) ; 
+        }
+        //Else, we are successful
+        //render the form.
+        res.render('model_form', {
+            title:'Update model',
+            model:results.model,
+            brands:results.brands
+        })
+    })
+
 }
 
 //Display model delete on POST
-exports.model_update_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: MODEL UPDATE POST')
-}
+exports.model_update_post = [
+    //Validate and sanitize fields
+    body('name', 'Title must not be empty.').trim().isLength({min:1}).escape(),
+    body('brand', 'Brand name must not be empty.').trim().isLength({min:1}).escape(),
+    body('retail_price', 'Must enter retail price').trim().isLength({min:1}).escape(),
+
+
+    (req, res, next) => {
+        //Extract the validation errors from the request
+        const errors = validationResult(req);
+
+        //Create a model object with the escaped/trimmed data and update with old id.
+        let model = new Model({
+            name:req.body.name,
+            brand:req.body.brand,
+            description:req.body.description,
+            retail_price:req.body.retail_price,
+            thumbnail:req.body.thumbnail,
+            _id:req.params.id
+        })
+        if (!errors.isEmpty()) {
+            //There are errors. Render the form again with sanitized values/error messages.
+            //Get all the model and brands for a form
+            async.parallel({
+                brands:function(callback) {
+                    Brand.find({})
+                    .exec(callback)
+                }
+            }, function(err, results) {
+                if (err) {return next(err); }
+                res.render('model_form', {
+                    title:'Update Model',
+                    model:model,
+                    brands:results.brands,
+                    errors:errors.array()
+                })
+            })  
+        } else {
+            //Data from the form is valid. Update the record.
+            Model.findByIdAndUpdate(req.params.id, model, function(err, themodel) {
+                if (err) {return next(err); }
+                //Successfull - redirect to the model detail page
+                res.redirect(themodel.url)
+            })
+        }
+    }
+]
