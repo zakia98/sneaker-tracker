@@ -1,0 +1,24 @@
+extends layout 
+
+block content 
+    h1 #{title}: #{brand.name}
+
+    if models.length 
+        p #[strong Delete the following models before attempting to delete this model]
+
+        div
+
+            h4 Models: 
+            dl 
+            each model in models
+                dt 
+                    a(href=model.url) #{model.name} 
+                dd #{model.description} 
+
+    else 
+        p Are you sure you really want to delete this Brand?
+
+        form(method="POST" action='')
+            div.form-group 
+                input#brandid.form-control(type='hidden' name='brandid' required='true' value=brand._id)
+                button.btn.btn-primary(type='submit') Delete

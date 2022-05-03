@@ -4,8 +4,8 @@ block content
   h1= title
   form(method='POST' action='')
     div.form-group
-      label(for='title') Title:
-      input#title.form-control(type='text', placeholder='Name of model' name='name' required='true' value=(undefined===book ? '' : book.title) )
+      label(for='name') Title:
+      input#name.form-control(type='text', placeholder='Name of model' name='name' required='true' value=(undefined===model ? '' : model.name) )
     div.form-group
       label(for='brand') Brand:
       select#brand.form-control(type='select' placeholder='Select brand' name='brand' required='true' )

@@ -1,0 +1,24 @@
+extends layout 
+
+block content 
+    h1 #{title}: #{model.name}
+
+    if inv_items.length 
+        p #[strong Delete the following inventory items before attempting to delete this model]
+
+        div
+
+            h4 Inventory Items: 
+            dl 
+            each inv_item in inv_items 
+                dt 
+                    a(href=inv_item.url) #{inv_item.model.name} 
+                dd #{inv_item.model.description} 
+
+    else 
+        p Do you really want to delete this Model?
+
+        form(method="POST" action='')
+            div.form-group 
+                input#modelid.form-control(type='hidden' name='modelid' required='true' value=model._id)
+                button.btn.btn-primary(type='submit') Delete

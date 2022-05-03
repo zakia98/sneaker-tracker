@@ -1,0 +1,23 @@
+extends layout 
+block content 
+    h1= title
+
+    p #[strong Brand:]
+        #{brand.name}
+
+    div(style='margin-left:20px;margin-top:20px;')
+        h4 Models in records: 
+
+
+        each model in models
+            hr
+            p 
+                a(href=model.url) #{model.name}
+        else
+            p No stock in inventory
+
+        hr
+        p 
+            a(href=brand.url +'/delete') Delete this brand 
+        p 
+            a(href=brand.url + '/update') Update this brand

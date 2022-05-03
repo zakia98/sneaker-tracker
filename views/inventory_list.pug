@@ -6,8 +6,9 @@ block content
     ul 
         each item in list_inventoryitem
             li
-                a(href=item.url) #{item.model.name}
-                |  (#{model.brand.name})
+                a(href=item.url) #{item.model.name} (Size: #{item.size}) (#{item._id})
+
+
 
         else 
             li There are no models to show.

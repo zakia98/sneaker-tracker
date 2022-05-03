@@ -1,0 +1,11 @@
+extends layout 
+
+block content 
+    p Do you really want to delete this item from the inventory?
+
+    p #{item.model.name} (Size: #{item.size}) (#{item._id})
+
+    form(method='POST' action='')
+        div.form-group 
+            input#itemidid.form-control(type='hidden' name='inv_itemid' required='true' value=inv_item._id)
+            button.btn.btn-primary(type=submit) Delete

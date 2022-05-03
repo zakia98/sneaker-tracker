@@ -20,6 +20,12 @@ block content
         each item in inventoryitems
             hr
             p #[strong Id:] 
-                a(href=val.url) #{val._id}
+                a(href=item.url) #{item._id}
         else
             p No stock in inventory
+
+        hr
+        p 
+            a(href=model.url +'/delete') Delete this model 
+        p 
+            a(href=model.url + '/update') Update this Model

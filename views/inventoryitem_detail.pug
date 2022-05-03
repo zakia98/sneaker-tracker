@@ -1,0 +1,21 @@
+extends layout 
+block content 
+    h1 #{inv_item.model.name}
+
+    p #[strong Model:]
+        a(href=inv_item.model.url) #{inv_item.model.name}
+    p #[strong Size:]  #{inv_item.size}
+    p #[strong Purchase Price: ]   #{inv_item.purchase_price}
+
+    img(
+        src=inv_item.model.thumbnail, 
+        alt="shoe image", 
+        srcset="", style='max-width:600px;'
+        )
+
+
+    hr
+    p 
+        a(href=inv_item.url +'/delete') Delete this item 
+    p 
+        a(href=inv_item.url + '/update') Update this item
